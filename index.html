@@ -157,7 +157,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://catifox.github.io/2020/11/22/tools/bv2av/">
+    <link itemprop="mainEntityOfPage" href="http://catifox.github.io/2020/11/22/bv2av/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.gif">
@@ -171,7 +171,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/11/22/tools/bv2av/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/11/22/bv2av/" class="post-title-link" itemprop="url">bv2av</a>
         </h2>
 
         <div class="post-meta">
@@ -182,185 +182,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-11-22 17:17:17 / 修改时间：17:14:32" itemprop="dateCreated datePublished" datetime="2020-11-22T17:17:17+08:00">2020-11-22</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>835</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <!DOCTYPE html>
-<!-- saved from url=(0053)https://mrhso.github.io/IshisashiWebsite/BVwhodoneit/ -->
-<html><link type="text/css" rel="stylesheet" id="dark-mode-general-link"><link type="text/css" rel="stylesheet" id="dark-mode-custom-link"><style lang="en" type="text/css" id="dark-mode-custom-style"></style><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width">
-<title>BV 号转 AV 号 - Catifoxの小工具</title>
-</head>
-
-<body>
-<input type="text" id="av"><button onclick="return av() &amp;&amp; false">AV 号转 BV 号</button>
-<input type="text" id="bv"><button onclick="return bv() &amp;&amp; false">BV 号转 AV 号</button>
-<p id="result">结果：</p>
-
-
-<script>
-// 我这人虽然是写 JS 的，但是看 Python 不是问题
-'use strict';
-
-const table = [...'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'];
-const s = [11, 10, 3, 8, 4, 6];
-const xor = 177451812;
-const add = 8728348608;
-
-const av2bv = (av) => {
-    let num = NaN;
-    if (Object.prototype.toString.call(av) === '[object Number]') {
-        num = av;
-    } else if (Object.prototype.toString.call(av) === '[object String]') {
-        num = parseInt(av.replace(/[^0-9]/gu, ''));
-    };
-    if (isNaN(num) || num <= 0) {
-        // 网页版直接输出这个结果了
-        return '¿你在想桃子？';
-    };
-
-    num = (num ^ xor) + add;
-    let result = [...'BV1  4 1 7  '];
-    let i = 0;
-    while (i < 6) {
-        // 这里改写差点犯了运算符优先级的坑
-        // 果然 Python 也不是特别熟练
-        // 说起来 ** 按照传统语法应该写成 Math.pow()，但是我个人更喜欢 ** 一些
-        result[s[i]] = table[Math.floor(num / 58 ** i) % 58];
-        i += 1;
-    };
-    return result.join('');
-};
-
-const bv2av = (bv) => {
-    let str = '';
-    if (bv.length === 12) {
-        str = bv;
-    } else if (bv.length === 10) {
-        str = `BV${bv}`;
-    // 根据官方 API，BV 号开头的 BV1 其实可以省略
-    // 不过单独省略个 B 又不行（
-    } else if (bv.length === 9) {
-        str = `BV1${bv}`;
-    } else {
-        return '¿你在想桃子？';
-    };
-    if (!str.match(/[Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10}/gu)) {
-        return '¿你在想桃子？';
-    };
-
-    let result = 0;
-    let i = 0;
-    while (i < 6) {
-        result += table.indexOf(str[s[i]]) * 58 ** i;
-        i += 1;
-    };
-    return `av${result - add ^ xor}`;
-};
-
-const av = () => {
-    let result = av2bv(document.getElementById('av').value);
-    if (result !== '¿你在想桃子？') {
-        document.getElementById('result').innerHTML = `结果：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/${result}">${result}</a>`;
-    } else {
-        document.getElementById('result').innerHTML = `结果：${result}`;
-    };
-};
-
-const bv = () => {
-    let result = bv2av(document.getElementById('bv').value);
-    if (result !== '¿你在想桃子？') {
-        document.getElementById('result').innerHTML = `结果：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/${result}">${result}</a>`;
-    } else {
-        document.getElementById('result').innerHTML = `结果：${result}`;
-    };
-};
-
-document.getElementById('av').addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-        av();
-    };
-});
-
-document.getElementById('bv').addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-        bv();
-    };
-});
-</script>
-
-
-</body></html>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://catifox.github.io/2020/11/22/BV2AV/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.gif">
-      <meta itemprop="name" content="Catifox">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Catifox's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/22/BV2AV/" class="post-title-link" itemprop="url">BV2AV</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-11-22 17:15:16 / 修改时间：17:16:49" itemprop="dateCreated datePublished" datetime="2020-11-22T17:15:16+08:00">2020-11-22</time>
+              <time title="创建时间：2020-11-22 17:36:15 / 修改时间：17:40:05" itemprop="dateCreated datePublished" datetime="2020-11-22T17:36:15+08:00">2020-11-22</time>
             </span>
 
           <br>
@@ -388,9 +210,7 @@ document.getElementById('bv').addEventListener('keydown', (event) => {
     <div class="post-body" itemprop="articleBody">
 
       
-           <iframe    height=850   width=90%   src="http://catifox.github.io"    frameborder=0    allowfullscreen>  </iframe>
-
-
+           <iframe    height=100   width=50%   src="catifox.github.io/2020/11/22/tools/bv2av/index.html"    frameborder=0    allowfullscreen>  </iframe>
       
     </div>
 
@@ -549,13 +369,9 @@ document.getElementById('bv').addEventListener('keydown', (event) => {
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">标签</span>
       </div>
   </nav>
 </div>
@@ -596,7 +412,7 @@ document.getElementById('bv').addEventListener('keydown', (event) => {
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">1k</span>
+    <span title="站点总字数">0k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
